@@ -1,4 +1,4 @@
-name: React CI Pipeline
+name: React CI/CD Pipeline
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,20 +21,22 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Run tests
+        run: npm test
+
       - name: Build app
         run: npm run build
 
       - name: Verify build output
         run: |
-          echo "Listing project root:"
-          ls
-          echo "Listing dist folder:"
+          echo "Dist contents:"
           ls dist
 
-      - name: Deploy to Netlify
+      - name: Deploy to Netlify (publish only)
         uses: netlify/actions/cli@master
         with:
           args: deploy --dir dist --prod
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_BUILD: false
