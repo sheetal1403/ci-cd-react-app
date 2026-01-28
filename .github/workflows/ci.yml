@@ -24,6 +24,13 @@ jobs:
       - name: Build app
         run: npm run build
 
+      - name: Verify build output
+        run: |
+          echo "Listing project root:"
+          ls
+          echo "Listing dist folder:"
+          ls dist
+
       - name: Deploy to Netlify
         uses: netlify/actions/cli@master
         with:
